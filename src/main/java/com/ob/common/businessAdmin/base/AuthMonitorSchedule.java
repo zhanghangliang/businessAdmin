@@ -1,4 +1,4 @@
-package com.ob.common.sm3token.base;
+package com.ob.common.businessAdmin.base;
 
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;

@@ -3,7 +3,7 @@
 // (powered by FernFlower decompiler)
 //
 
-package com.ob.common.sm3token.base;
+package com.ob.common.businessAdmin.base;
 
 import java.text.MessageFormat;
 import java.util.Arrays;

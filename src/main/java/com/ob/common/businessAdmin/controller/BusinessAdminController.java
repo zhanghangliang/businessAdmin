@@ -1,8 +1,8 @@
-package com.ob.common.sm3token.controller;
+package com.ob.common.businessAdmin.controller;
 
 import cn.hutool.json.JSONUtil;
-import com.ob.common.sm3token.base.ResponseResult;
-import com.ob.common.sm3token.domain.CommonReqDTO;
+import com.ob.common.businessAdmin.base.ResponseResult;
+import com.ob.common.businessAdmin.domain.CommonReqDTO;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;

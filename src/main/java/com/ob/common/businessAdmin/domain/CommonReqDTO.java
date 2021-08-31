@@ -1,4 +1,4 @@
-package com.ob.common.sm3token.domain;
+package com.ob.common.businessAdmin.domain;
 
 import lombok.Getter;
 import lombok.Setter;

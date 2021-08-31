@@ -1,4 +1,4 @@
-package com.ob.common.sm3token.base;
+package com.ob.common.businessAdmin.base;
 
 public class ResponseResultHelper {
 

@@ -1,4 +1,4 @@
-package com.ob.common.sm3token.config;
+package com.ob.common.businessAdmin.config;
 
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;

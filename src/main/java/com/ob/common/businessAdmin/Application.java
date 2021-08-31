@@ -1,4 +1,4 @@
-package com.ob.common.sm3token;
+package com.ob.common.businessAdmin;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
