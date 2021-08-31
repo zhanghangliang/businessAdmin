@@ -8,12 +8,18 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 @Component
 public class PreGetSwaggerFactory {
 
     private static final Logger LOG = Logger.getLogger(PreGetSwaggerFactory.class.getName());
+
+    public static List<String> getMethodUrl = new ArrayList<>();
+
+    public static List<String> postMethodUrl = new ArrayList<>();
 
     @PostConstruct
     public void preGetSwagger() {
@@ -25,6 +31,13 @@ public class PreGetSwaggerFactory {
             String getRef = JSONUtil.getByPath(JSONUtil.parse(value), "$.get.responses.200.schema.$ref", "");
             String post = JSONUtil.getByPath(JSONUtil.parse(value), "$.post", "");
             String get = JSONUtil.getByPath(JSONUtil.parse(value), "$.get", "");
+
+            if(!StringUtils.isEmpty(post)) {
+                postMethodUrl.add(key);
+            }
+            if(!StringUtils.isEmpty(get)) {
+                getMethodUrl.add(key);
+            }
 
 //            // 全部请求
 //            System.out.println(key);
