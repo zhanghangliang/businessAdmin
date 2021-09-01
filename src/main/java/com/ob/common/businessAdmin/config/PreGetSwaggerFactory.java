@@ -2,7 +2,6 @@ package com.ob.common.businessAdmin.config;
 
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
-import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import org.springframework.stereotype.Component;
