@@ -32,29 +32,36 @@ public class BusinessAdminController {
 
     @PostMapping
     public void commonSend(@RequestParam MultipartFile[] files, @RequestParam Map<String, String> params, HttpServletResponse resp) {
-        LOG.info(String.format("文件数量[%s],请求参数[%s]", files.length, JSONUtil.toJsonStr(params)));
         ResponseResult<Object> result = new ResponseResult<>();
-        resp.setHeader("Content-Type", "application/json;charset=UTF-8");
 
         String url = params.getOrDefault("url", "");
         try {
             if (PreGetSwaggerFactory.UPLOAD_METHOD_URL.contains(url)) {
                 // 上传链接
+                LOG.info(String.format("[%s],请求参数[%s]，文件数量[%s]", "上传链接", JSONUtil.toJsonStr(params), files.length));
                 uploadMethod(files, result, Method.POST, params, resp);
             } else if (PreGetSwaggerFactory.DOWNLOAD_METHOD_URL.contains(url)) {
                 // 下载链接
+                LOG.info(String.format("[%s],请求参数[%s]，文件数量[%s]", "下载链接", JSONUtil.toJsonStr(params), files.length));
                 downloadMethod(result, params, resp);
             } else if (PreGetSwaggerFactory.GET_METHOD_URL.contains(url)) {
                 // 普通get链接
+                LOG.info(String.format("[%s],请求参数[%s]，文件数量[%s]", "普通get链接", JSONUtil.toJsonStr(params), files.length));
                 simpleGetOrPost(result, Method.GET, params, resp);
             } else if (PreGetSwaggerFactory.POST_METHOD_URL.contains(url)) {
                 // 普通post链接
+                LOG.info(String.format("[%s],请求参数[%s]，文件数量[%s]", "普通post链接", JSONUtil.toJsonStr(params), files.length));
                 simpleGetOrPost(result, Method.POST, params, resp);
             } else {
                 throw new DataException("500", String.format("请求消息体中的url[%s]不存在，请检查", url));
             }
         } catch (Exception e) {
             result.putException(e);
+            try {
+                resp.getWriter().write(JSONUtil.toJsonStr(result));
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
         }
     }
 
@@ -68,6 +75,7 @@ public class BusinessAdminController {
         request.body(params.getOrDefault("data", ""));
         String res = request.execute().body();
         result.setData(res);
+        resp.setHeader("Content-Type", "application/json;charset=UTF-8");
         resp.getWriter().write(JSONUtil.toJsonStr(result));
     }
 
@@ -81,6 +89,7 @@ public class BusinessAdminController {
         request.form("token", params.getOrDefault("token", ""));
         String res = request.execute().body();
         result.setData(res);
+        resp.setHeader("Content-Type", "application/json;charset=UTF-8");
         resp.getWriter().write(JSONUtil.toJsonStr(result));
     }
 
