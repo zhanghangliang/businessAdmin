@@ -33,27 +33,30 @@ public class BusinessAdminController {
     @PostMapping
     public void commonSend(@RequestParam MultipartFile[] files, @RequestParam Map<String, String> params, HttpServletResponse resp) {
         ResponseResult<Object> result = new ResponseResult<>();
+        resp.setCharacterEncoding("UTF-8");
 
         String url = params.getOrDefault("url", "");
+        int index = url.indexOf("?");
+        String urlWithoutParam = url.substring(0, index == -1 ? url.length() : index);
         try {
-            if (PreGetSwaggerFactory.UPLOAD_METHOD_URL.contains(url)) {
+            if (PreGetSwaggerFactory.UPLOAD_METHOD_URL.contains(urlWithoutParam)) {
                 // 上传链接
-                LOG.info(String.format("[%s],请求参数[%s]，文件数量[%s]", "上传链接", JSONUtil.toJsonStr(params), files.length));
+                LOG.info(String.format("[%s],请求参数[%s],文件数量[%s]", "上传链接", JSONUtil.toJsonStr(params), files.length));
                 uploadMethod(files, result, Method.POST, params, resp);
-            } else if (PreGetSwaggerFactory.DOWNLOAD_METHOD_URL.contains(url)) {
+            } else if (PreGetSwaggerFactory.DOWNLOAD_METHOD_URL.contains(urlWithoutParam)) {
                 // 下载链接
-                LOG.info(String.format("[%s],请求参数[%s]，文件数量[%s]", "下载链接", JSONUtil.toJsonStr(params), files.length));
+                LOG.info(String.format("[%s],请求参数[%s],文件数量[%s]", "下载链接", JSONUtil.toJsonStr(params), files.length));
                 downloadMethod(result, params, resp);
-            } else if (PreGetSwaggerFactory.GET_METHOD_URL.contains(url)) {
+            } else if (PreGetSwaggerFactory.GET_METHOD_URL.contains(urlWithoutParam)) {
                 // 普通get链接
-                LOG.info(String.format("[%s],请求参数[%s]，文件数量[%s]", "普通get链接", JSONUtil.toJsonStr(params), files.length));
+                LOG.info(String.format("[%s],请求参数[%s],文件数量[%s]", "普通get链接", JSONUtil.toJsonStr(params), files.length));
                 simpleGetOrPost(result, Method.GET, params, resp);
-            } else if (PreGetSwaggerFactory.POST_METHOD_URL.contains(url)) {
+            } else if (PreGetSwaggerFactory.POST_METHOD_URL.contains(urlWithoutParam)) {
                 // 普通post链接
-                LOG.info(String.format("[%s],请求参数[%s]，文件数量[%s]", "普通post链接", JSONUtil.toJsonStr(params), files.length));
+                LOG.info(String.format("[%s],请求参数[%s],文件数量[%s]", "普通post链接", JSONUtil.toJsonStr(params), files.length));
                 simpleGetOrPost(result, Method.POST, params, resp);
             } else {
-                throw new DataException("500", String.format("请求消息体中的url[%s]不存在，请检查", url));
+                throw new DataException("500", String.format("请求消息体中的url[%s]不存在,请检查", urlWithoutParam));
             }
         } catch (Exception e) {
             result.putException(e);
