@@ -87,9 +87,9 @@ public class BusinessAdminController {
      */
     private void uploadMethod(MultipartFile[] files, ResponseResult<Object> result, Method method, Map<String, String> params, HttpServletResponse resp) throws IOException {
         HttpRequest request = HttpUtil.createRequest(method, BASE_URL + params.getOrDefault("url", ""))
-                .header("Content-Type", "multipart/form-data");
+                .header("Content-Type", "multipart/form-data")
+                .header("token", params.getOrDefault("token", ""));
         request.form("files", files);
-        request.form("token", params.getOrDefault("token", ""));
         String res = request.execute().body();
         result.setData(res);
         resp.setHeader("Content-Type", "application/json;charset=UTF-8");
