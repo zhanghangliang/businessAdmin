@@ -16,7 +16,8 @@ true -->
             <level>debug</level>
         </filter>
         <encoder>
-            <Pattern>%date [%-5p] [%thread] %logger{60} [%file : %line] %msg%n</Pattern>
+<!--            <Pattern>%date [%-5p] [%thread] %logger{60} [%file : %line] %msg%n</Pattern>-->
+            <Pattern>%date [%-5p] [%file : %line] %msg%n</Pattern>
             <!-- 设置字符集 -->
             <charset>UTF-8</charset>
         </encoder>
@@ -29,9 +30,8 @@ true -->
 		-->
         <File>./log/proj.log</File>
         <encoder>
-            <pattern>%date [%-5p] %thread %logger{60}
-                [%file : %line] %msg%n
-            </pattern>
+<!--            <pattern>%date [%-5p] %thread %logger{60} [%file : %line] %msg%n</pattern>-->
+            <pattern>%date [%-5p] [%file : %line] %msg%n</pattern>
         </encoder>
         <rollingPolicy
                 class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">

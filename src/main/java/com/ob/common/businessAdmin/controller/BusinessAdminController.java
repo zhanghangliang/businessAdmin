@@ -71,7 +71,7 @@ public class BusinessAdminController {
                 ioException.printStackTrace();
             }
         } finally {
-            LOG.info(String.format("[%s], \n请求参数[%s], \n第三方返回值[%s], \n文件数量[%s]", methodType, JSONUtil.toJsonStr(params), res, files.length));
+            LOG.info(String.format("[%s], 文件数量[%s], \n请求参数[%s], \n第三方返回值[%s]\n", methodType, files.length, JSONUtil.toJsonStr(params), res));
         }
     }
 
