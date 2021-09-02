@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
@@ -31,30 +32,28 @@ public class BusinessAdminController {
     private static final Logger LOG = Logger.getLogger(BusinessAdminController.class.getName());
 
     @PostMapping
-    public void commonSend(@RequestParam MultipartFile[] files, @RequestParam Map<String, String> params, HttpServletResponse resp) {
+    public void commonSend(@RequestParam MultipartFile[] files, @RequestParam Map<String, String> params, HttpServletRequest req, HttpServletResponse resp) {
         ResponseResult<Object> result = new ResponseResult<>();
         resp.setCharacterEncoding("UTF-8");
 
         String url = params.getOrDefault("url", "");
         int index = url.indexOf("?");
+        String methodType = "未知" + url;
+        String res = "未返回";
         String urlWithoutParam = url.substring(0, index == -1 ? url.length() : index);
         try {
             if (PreGetSwaggerFactory.UPLOAD_METHOD_URL.contains(urlWithoutParam)) {
-                // 上传链接
-                LOG.info(String.format("[%s],请求参数[%s],文件数量[%s]", "上传链接", JSONUtil.toJsonStr(params), files.length));
-                uploadMethod(files, result, Method.POST, params, resp);
+                methodType = "上传链接";
+                res = uploadMethod(files, result, Method.POST, params, resp);
             } else if (PreGetSwaggerFactory.DOWNLOAD_METHOD_URL.contains(urlWithoutParam)) {
-                // 下载链接
-                LOG.info(String.format("[%s],请求参数[%s],文件数量[%s]", "下载链接", JSONUtil.toJsonStr(params), files.length));
+                methodType = "下载链接";
                 downloadMethod(result, params, resp);
             } else if (PreGetSwaggerFactory.GET_METHOD_URL.contains(urlWithoutParam)) {
-                // 普通get链接
-                LOG.info(String.format("[%s],请求参数[%s],文件数量[%s]", "普通get链接", JSONUtil.toJsonStr(params), files.length));
-                simpleGetOrPost(result, Method.GET, params, resp);
+                methodType = "普通get链接";
+                res = simpleGetOrPost(result, Method.GET, params, resp);
             } else if (PreGetSwaggerFactory.POST_METHOD_URL.contains(urlWithoutParam)) {
-                // 普通post链接
-                LOG.info(String.format("[%s],请求参数[%s],文件数量[%s]", "普通post链接", JSONUtil.toJsonStr(params), files.length));
-                simpleGetOrPost(result, Method.POST, params, resp);
+                methodType = "普通post链接";
+                res = simpleGetOrPost(result, Method.POST, params, resp);
             } else {
                 throw new DataException("500", String.format("请求消息体中的url[%s]不存在,请检查", urlWithoutParam));
             }
@@ -65,13 +64,15 @@ public class BusinessAdminController {
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
+        } finally {
+            LOG.info(String.format("[%s], \n请求参数[%s], \n第三方返回值[%s], \n文件数量[%s]", methodType, JSONUtil.toJsonStr(params), res, files.length));
         }
     }
 
     /**
      * 处理普通的get、post请求
      */
-    private void simpleGetOrPost(ResponseResult<Object> result, Method method, Map<String, String> params, HttpServletResponse resp) throws IOException {
+    private String simpleGetOrPost(ResponseResult<Object> result, Method method, Map<String, String> params, HttpServletResponse resp) throws IOException {
         HttpRequest request = HttpUtil.createRequest(method, BASE_URL + params.getOrDefault("url", ""))
                 .header("Content-Type", "application/json;charset=UTF-8")
                 .header("token", params.getOrDefault("token", ""));
@@ -79,13 +80,15 @@ public class BusinessAdminController {
         String res = request.execute().body();
         result.setData(res);
         resp.setHeader("Content-Type", "application/json;charset=UTF-8");
-        resp.getWriter().write(JSONUtil.toJsonStr(result));
+//        resp.getWriter().write(JSONUtil.toJsonStr(result));
+        resp.getWriter().write(res);
+        return res;
     }
 
     /**
      * 处理上传请求
      */
-    private void uploadMethod(MultipartFile[] files, ResponseResult<Object> result, Method method, Map<String, String> params, HttpServletResponse resp) throws IOException {
+    private String uploadMethod(MultipartFile[] files, ResponseResult<Object> result, Method method, Map<String, String> params, HttpServletResponse resp) throws IOException {
         HttpRequest request = HttpUtil.createRequest(method, BASE_URL + params.getOrDefault("url", ""))
                 .header("Content-Type", "multipart/form-data")
                 .header("token", params.getOrDefault("token", ""));
@@ -93,7 +96,9 @@ public class BusinessAdminController {
         String res = request.execute().body();
         result.setData(res);
         resp.setHeader("Content-Type", "application/json;charset=UTF-8");
-        resp.getWriter().write(JSONUtil.toJsonStr(result));
+//        resp.getWriter().write(JSONUtil.toJsonStr(result));
+        resp.getWriter().write(res);
+        return res;
     }
 
     /**
