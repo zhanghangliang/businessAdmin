@@ -9,9 +9,11 @@ import com.ob.common.businessAdmin.base.DataException;
 import com.ob.common.businessAdmin.base.ResponseResult;
 import com.ob.common.businessAdmin.config.PreGetSwaggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,10 +33,14 @@ public class BusinessAdminController {
 
     private static final Logger LOG = Logger.getLogger(BusinessAdminController.class.getName());
 
-    @PostMapping
+    @RequestMapping(method = {RequestMethod.GET, RequestMethod.POST})
     public void commonSend(@RequestParam MultipartFile[] files, @RequestParam Map<String, String> params, HttpServletRequest req, HttpServletResponse resp) {
         ResponseResult<Object> result = new ResponseResult<>();
         resp.setCharacterEncoding("UTF-8");
+
+        if(!StringUtils.isEmpty(req.getHeader("token")) && !params.containsKey("token")) {
+            params.put("token", req.getHeader("token"));
+        }
 
         String url = params.getOrDefault("url", "");
         int index = url.indexOf("?");
