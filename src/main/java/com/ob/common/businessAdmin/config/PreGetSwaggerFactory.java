@@ -11,6 +11,8 @@ import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.ob.common.businessAdmin.controller.BusinessAdminController.BASE_URL;
+
 @Component
 public class PreGetSwaggerFactory {
 
@@ -24,7 +26,7 @@ public class PreGetSwaggerFactory {
 
     @PostConstruct
     public void preGetSwagger() {
-        HttpResponse response = HttpUtil.createGet("http://server.dyzwdbk.com/gov-wiki-admin/v2/api-docs").execute();
+        HttpResponse response = HttpUtil.createGet(BASE_URL + "/v2/api-docs").execute();
         String pathsStr = JSONUtil.getByPath(JSONUtil.parse(response.body()), "$.paths").toString();
         JSONObject paths = JSONUtil.parseObj(pathsStr);
         paths.forEach((key, value) -> {

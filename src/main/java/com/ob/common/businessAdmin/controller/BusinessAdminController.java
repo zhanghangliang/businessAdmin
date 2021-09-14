@@ -11,7 +11,6 @@ import com.ob.common.businessAdmin.config.PreGetSwaggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,7 +28,8 @@ import java.util.logging.Logger;
 @RequestMapping("businessAdmin/common")
 public class BusinessAdminController {
 
-    private static final String BASE_URL = "http://server.dyzwdbk.com/gov-wiki-admin";
+    public static final String BASE_URL = "http://server.dyzwdbk.com/gov-wiki-admin";
+//    public static final String BASE_URL = "http://localhost:10091/gov-wiki-admin";
 
     private static final Logger LOG = Logger.getLogger(BusinessAdminController.class.getName());
 
@@ -38,7 +38,7 @@ public class BusinessAdminController {
         ResponseResult<Object> result = new ResponseResult<>();
         resp.setCharacterEncoding("UTF-8");
 
-        if(!StringUtils.isEmpty(req.getHeader("token")) && !params.containsKey("token")) {
+        if (!StringUtils.isEmpty(req.getHeader("token")) && !params.containsKey("token")) {
             params.put("token", req.getHeader("token"));
         }
 
