@@ -22,7 +22,7 @@ public class AuthMonitorSchedule {
     public void init() {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            String date = "2021-10-15";
+            String date = "2021-10-30";
             String webUrl = "https://www.baidu.com";
             URLConnection conn = new URL(webUrl).openConnection();
             conn.connect();
