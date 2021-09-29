@@ -20,8 +20,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*")
 @Controller
@@ -64,6 +67,7 @@ public class BusinessAdminController {
                 throw new DataException("500", String.format("请求消息体中的url[%s]不存在,请检查", urlWithoutParam));
             }
         } catch (Exception e) {
+            e.printStackTrace();
             result.putException(e);
             try {
                 resp.getWriter().write(JSONUtil.toJsonStr(result));
@@ -94,10 +98,11 @@ public class BusinessAdminController {
     /**
      * 处理上传请求
      */
-    private String uploadMethod(MultipartFile[] files, ResponseResult<Object> result, Method method, Map<String, String> params, HttpServletResponse resp) throws IOException {
+    private String uploadMethod(MultipartFile[] multies, ResponseResult<Object> result, Method method, Map<String, String> params, HttpServletResponse resp) throws IOException {
         HttpRequest request = HttpUtil.createRequest(method, BASE_URL + params.getOrDefault("url", ""))
                 .header("Content-Type", "multipart/form-data")
                 .header("token", params.getOrDefault("token", ""));
+        File[] files = multipartToFile(multies).toArray(new File[]{});
         request.form("files", files);
         String res = request.execute().body();
         result.setData(res);
@@ -118,5 +123,22 @@ public class BusinessAdminController {
 
         byte[] bytes = FileUtil.readBytes(tmp);
         // TODO 下载请求需要单独处理
+    }
+
+    private List<File> multipartToFile(MultipartFile[] multies) {
+        return Arrays.stream(multies).map(multipartFile -> {
+            File file = null;
+            try {
+                String originalFilename = multipartFile.getOriginalFilename();
+
+                String tmpdir = System.getProperty("java.io.tmpdir");
+                file = new File(tmpdir + "/" + originalFilename);
+                multipartFile.transferTo(file);
+                file.deleteOnExit();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return file;
+        }).collect(Collectors.toList());
     }
 }
